@@ -39,7 +39,6 @@ func main() {
 	var l = lock{}
 	e := result.Scan(&l.isLocked, &l.lockGranted, &l.lockedBy)
 	handleError(e)
-
 	if l.isLocked {
 		handleDBLock(l, db)
 	}
@@ -70,7 +69,6 @@ func connectToDb() *sql.DB {
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(1)
-
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
