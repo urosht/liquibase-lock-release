@@ -1,0 +1,27 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: liquibase-lock-release
+  namespace: example
+spec:
+  schedule: "*/3 * * * *"
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: liquibase-lock-release
+            image: my-secure-registry.org/liquibase-lock-release:v1
+            imagePullPolicy: Always
+            env:
+              - name: MAX_LOCK_TIME
+                value: "3m"
+            envFrom:
+              - secretRef:
+                  name: liquibase-lock-release-secret
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: example-secret
